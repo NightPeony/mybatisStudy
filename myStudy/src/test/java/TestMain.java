@@ -242,20 +242,21 @@ public class TestMain {
         JSONObject str =  jsonObject.getJSONObject(type);
         JSONArray questions = str.getJSONArray("questions");
         int size1 = questions.size();
-        String sonCopy = new String(son);
         for (int k = 1;k < size1 ;k ++){
             JSONObject son2 =  questions.getJSONObject(k);
-            String name = (String) son2.get("name");
+            if (type == 0){
+                son = "";
+            }
             String id = (String) son2.get("id");
             String splite = "";
             if (son!=null && !son.equals("")){
                 splite = "#";
             }
             if (type == size - 1 ){
-                result.add(sonCopy + splite + id);
+                result.add(son + splite + id);
             }else {
                 int j = type + 1;
-                getList(jsonObject,j,result,sonCopy + splite + id);
+                getList(jsonObject,j,result,son + splite + id);
             }
         }
     }
