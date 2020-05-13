@@ -18,8 +18,6 @@ public class testXml {
 
    public static void main(String[] args) throws IOException {
        //1.读取配置文件
-
-
        InputStream in = Resources.getResourceAsStream("mybatis.cfg.xml");
        //2.创建SqlSessionFactory工厂
        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(in);
