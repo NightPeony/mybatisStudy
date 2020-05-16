@@ -118,20 +118,23 @@ public class XMLConfigBuilder extends BaseBuilder {
       //记录插件功能   放入configration
       pluginElement(root.evalNode("plugins"));
       //配置默认的对象工厂  放入configration
+      //======================================
       objectFactoryElement(root.evalNode("objectFactory"));
       //对指定的对象进行加工  放入configration
       objectWrapperFactoryElement(root.evalNode("objectWrapperFactory"));
+      //======================================
       //用于缓存 Reflector 的功能  存入configration
       reflectorFactoryElement(root.evalNode("reflectorFactory"));
-      //初始化 默认节点数据  即setting设置
+      //初始化    默认节点数据    即setting设置
+      //基础类
       settingsElement(settings);
       // read it after objectFactory and objectWrapperFactory issue #631
       //环境
       environmentsElement(root.evalNode("environments"));
       databaseIdProviderElement(root.evalNode("databaseIdProvider"));
-      //指定类型
+      //指定类型  JDBC和JavaType 之间的转换
       typeHandlerElement(root.evalNode("typeHandlers"));
-      //获取mapper文件
+      //获取mapper文件===============
       mapperElement(root.evalNode("mappers"));
     } catch (Exception e) {
       throw new BuilderException("Error parsing SQL Mapper Configuration. Cause: " + e, e);
@@ -144,6 +147,7 @@ public class XMLConfigBuilder extends BaseBuilder {
     }
     Properties props = context.getChildrenAsProperties();
     // Check that all settings are known to the configuration class
+    //检查xml的设setting的配置是否是configgra允许的 通过setting方法确定是否有这个属性
     MetaClass metaConfig = MetaClass.forClass(Configuration.class, localReflectorFactory);
     for (Object key : props.keySet()) {
       if (!metaConfig.hasSetter(String.valueOf(key))) {
@@ -169,7 +173,7 @@ public class XMLConfigBuilder extends BaseBuilder {
   }
 
   private void loadCustomLogImpl(Properties props) {
-    //控制mybatis的日志打印
+    //控制mybatis的日志打印   使用哪个打印日志
     Class<? extends Log> logImpl = resolveClass(props.getProperty("logImpl"));
     configuration.setLogImpl(logImpl);
   }

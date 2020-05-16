@@ -15,23 +15,19 @@
  */
 package org.apache.ibatis.builder.xml;
 
-import java.util.List;
-import java.util.Locale;
-
 import org.apache.ibatis.builder.BaseBuilder;
 import org.apache.ibatis.builder.MapperBuilderAssistant;
 import org.apache.ibatis.executor.keygen.Jdbc3KeyGenerator;
 import org.apache.ibatis.executor.keygen.KeyGenerator;
 import org.apache.ibatis.executor.keygen.NoKeyGenerator;
 import org.apache.ibatis.executor.keygen.SelectKeyGenerator;
-import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.mapping.ResultSetType;
-import org.apache.ibatis.mapping.SqlCommandType;
-import org.apache.ibatis.mapping.SqlSource;
-import org.apache.ibatis.mapping.StatementType;
+import org.apache.ibatis.mapping.*;
 import org.apache.ibatis.parsing.XNode;
 import org.apache.ibatis.scripting.LanguageDriver;
 import org.apache.ibatis.session.Configuration;
+
+import java.util.List;
+import java.util.Locale;
 
 /**
  * @author Clinton Begin
@@ -48,30 +44,40 @@ public class XMLStatementBuilder extends BaseBuilder {
 
   public XMLStatementBuilder(Configuration configuration, MapperBuilderAssistant builderAssistant, XNode context, String databaseId) {
     super(configuration);
+    //协处理器
     this.builderAssistant = builderAssistant;
+    //具体的sql文本
     this.context = context;
+    //指定的数据库
     this.requiredDatabaseId = databaseId;
   }
 
   public void parseStatementNode() {
+    //获取ID
     String id = context.getStringAttribute("id");
+    //获取数据库开发环境
     String databaseId = context.getStringAttribute("databaseId");
-
+    //是否是指定的当前库  如果不是  那么直接中断
     if (!databaseIdMatchesCurrent(id, databaseId, this.requiredDatabaseId)) {
       return;
     }
-
+    //以下整段代码就是解析sql节点=====================================  <select>  <update>  <delete>
+    //查询类型
     String nodeName = context.getNode().getNodeName();
+    //转成内部五种枚举
     SqlCommandType sqlCommandType = SqlCommandType.valueOf(nodeName.toUpperCase(Locale.ENGLISH));
+    //查询单独拿出来
     boolean isSelect = sqlCommandType == SqlCommandType.SELECT;
+    //是否刷新缓存
     boolean flushCache = context.getBooleanAttribute("flushCache", !isSelect);
+    //是否使用缓存
     boolean useCache = context.getBooleanAttribute("useCache", isSelect);
+
     boolean resultOrdered = context.getBooleanAttribute("resultOrdered", false);
 
     // Include Fragments before parsing
     XMLIncludeTransformer includeParser = new XMLIncludeTransformer(configuration, builderAssistant);
     includeParser.applyIncludes(context.getNode());
-
     String parameterType = context.getStringAttribute("parameterType");
     Class<?> parameterTypeClass = resolveClass(parameterType);
 
@@ -79,12 +85,15 @@ public class XMLStatementBuilder extends BaseBuilder {
     LanguageDriver langDriver = getLanguageDriver(lang);
 
     // Parse selectKey after includes and remove them.
+    //返回最近的一次的id
     processSelectKeyNodes(id, parameterTypeClass, langDriver);
 
     // Parse the SQL (pre: <selectKey> and <include> were parsed and removed)
     KeyGenerator keyGenerator;
     String keyStatementId = id + SelectKeyGenerator.SELECT_KEY_SUFFIX;
     keyStatementId = builderAssistant.applyCurrentNamespace(keyStatementId, true);
+    //组装唯一key
+    //加入configration
     if (configuration.hasKeyGenerator(keyStatementId)) {
       keyGenerator = configuration.getKeyGenerator(keyStatementId);
     } else {
@@ -111,6 +120,7 @@ public class XMLStatementBuilder extends BaseBuilder {
     String resultSets = context.getStringAttribute("resultSets");
 
     //加入MappedStatement 这是sql节点  每一个
+    //协助处理器的作用  之前的处理器是承担整个mapper的处理  而协处理器是承担每一个sql节点的处理
     builderAssistant.addMappedStatement(id, sqlSource, statementType, sqlCommandType,
         fetchSize, timeout, parameterMap, parameterTypeClass, resultMap, resultTypeClass,
         resultSetTypeEnum, flushCache, useCache, resultOrdered,

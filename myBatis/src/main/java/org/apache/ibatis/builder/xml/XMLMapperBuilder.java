@@ -15,39 +15,21 @@
  */
 package org.apache.ibatis.builder.xml;
 
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import org.apache.ibatis.builder.BaseBuilder;
-import org.apache.ibatis.builder.BuilderException;
-import org.apache.ibatis.builder.CacheRefResolver;
-import org.apache.ibatis.builder.IncompleteElementException;
-import org.apache.ibatis.builder.MapperBuilderAssistant;
-import org.apache.ibatis.builder.ResultMapResolver;
+import org.apache.ibatis.builder.*;
 import org.apache.ibatis.cache.Cache;
 import org.apache.ibatis.executor.ErrorContext;
 import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.mapping.Discriminator;
-import org.apache.ibatis.mapping.ParameterMapping;
-import org.apache.ibatis.mapping.ParameterMode;
-import org.apache.ibatis.mapping.ResultFlag;
-import org.apache.ibatis.mapping.ResultMap;
-import org.apache.ibatis.mapping.ResultMapping;
+import org.apache.ibatis.mapping.*;
 import org.apache.ibatis.parsing.XNode;
 import org.apache.ibatis.parsing.XPathParser;
 import org.apache.ibatis.reflection.MetaClass;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
+
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.*;
 
 /**
  * @author Clinton Begin
@@ -84,18 +66,26 @@ public class XMLMapperBuilder extends BaseBuilder {
   }
 
   private XMLMapperBuilder(XPathParser parser, Configuration configuration, String resource, Map<String, XNode> sqlFragments) {
+    //XMLMapperBuilder 构建基础信息
     super(configuration);
+    //也是基于BaseBuilder  解析助理器
     this.builderAssistant = new MapperBuilderAssistant(configuration, resource);
+    //解析器 解析configretion的时候有用到
     this.parser = parser;
+    //sql 目前不知干啥的
     this.sqlFragments = sqlFragments;
+    //resource路劲
     this.resource = resource;
   }
 
   public void parse() {
+    //是否有加载过  没有就加载
     if (!configuration.isResourceLoaded(resource)) {
       //将mapperde的数据解析出来
       configurationElement(parser.evalNode("/mapper"));
+      //放入配置
       configuration.addLoadedResource(resource);
+      //将命名空间和具体的mapper类绑定  但是不知道为啥要分开绑  一个mapper它不香么
       bindMapperForNamespace();
     }
     //清空缓存 也不知道啥
@@ -110,17 +100,25 @@ public class XMLMapperBuilder extends BaseBuilder {
 
   private void configurationElement(XNode context) {
     try {
+      //获取命名空间
       String namespace = context.getStringAttribute("namespace");
       if (namespace == null || namespace.isEmpty()) {
         throw new BuilderException("Mapper's namespace cannot be empty");
       }
+      //存入命名空间
       builderAssistant.setCurrentNamespace(namespace);
+      //使用缓存分两种   一种引用哪个cache   一种缓存
+      //引用哪个cache
       cacheRefElement(context.evalNode("cache-ref"));
+      //一种缓存
       cacheElement(context.evalNode("cache"));
+      //入参存储
       parameterMapElement(context.evalNodes("/mapper/parameterMap"));
+      //返回结果集存储
       resultMapElements(context.evalNodes("/mapper/resultMap"));
+      //缓存的sql片段
       sqlElement(context.evalNodes("/mapper/sql"));
-      //这一步又委托给XMLStatementBuilder  每一个 mapper一个  解析sql并储存  关联缓存
+      //这一步又委托给XMLStatementBuilder   每一个    mapper一个    解析sql并储存    关联缓存
       buildStatementFromContext(context.evalNodes("select|insert|update|delete"));
     } catch (Exception e) {
       throw new BuilderException("Error parsing Mapper XML. The XML location is '" + resource + "'. Cause: " + e, e);
@@ -128,9 +126,12 @@ public class XMLMapperBuilder extends BaseBuilder {
   }
 
   private void buildStatementFromContext(List<XNode> list) {
+    //是否存在数据库id
     if (configuration.getDatabaseId() != null) {
+      //指定数据库处理sql
       buildStatementFromContext(list, configuration.getDatabaseId());
     }
+    //直接处理sql
     buildStatementFromContext(list, null);
   }
 

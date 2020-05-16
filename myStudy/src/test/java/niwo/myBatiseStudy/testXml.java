@@ -10,6 +10,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * Created by web on 2020/5/12.
@@ -24,8 +25,11 @@ public class testXml {
        //3.使用工厂生产SqlSession对象
        SqlSession session = sqlSessionFactory.openSession();
        MybatiesPoMapper mapper = session.getMapper(MybatiesPoMapper.class);
-       MybatiesPo po = mapper.getPo(1);
-       System.out.println(JSON.toJSONString(po));
+       //MybatiesPo po = mapper.getPo(1);
+       List<MybatiesPo> pos = mapper.getPoAll();
+       List<MybatiesPo> pos2 = mapper.getPoAll();
+       System.out.println(JSON.toJSONString(pos));
+       System.out.println(JSON.toJSONString(pos2));
        //6.释放资源
        session.close();
        in.close();
