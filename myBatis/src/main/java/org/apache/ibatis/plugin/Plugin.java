@@ -45,7 +45,7 @@ public class Plugin implements InvocationHandler {
   public static Object wrap(Object target, Interceptor interceptor) {
     //获得对应的类和对应的方法
     Map<Class<?>, Set<Method>> signatureMap = getSignatureMap(interceptor);
-    //获得目标执行的方法
+    //目标class
     Class<?> type = target.getClass();
     //将目标执行目标需要放入的方法全部放入
     Class<?>[] interfaces = getAllInterfaces(type, signatureMap);

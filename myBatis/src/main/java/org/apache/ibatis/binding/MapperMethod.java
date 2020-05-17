@@ -81,7 +81,7 @@ public class MapperMethod {
       }
       //第一个看查询
       case SELECT:
-        //方法信息是在什么时候构建的，你在构建方法的时候  将session中的信息解析成上面两个对象
+        //方法信息是在什么时候构建的
         //是否是返回空的  并且  还有handler  result = null;
         if (method.returnsVoid() && method.hasResultHandler()) {
           executeWithResultHandler(sqlSession, args);
