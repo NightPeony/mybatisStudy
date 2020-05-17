@@ -85,7 +85,7 @@ public class XMLMapperBuilder extends BaseBuilder {
       configurationElement(parser.evalNode("/mapper"));
       //放入配置
       configuration.addLoadedResource(resource);
-      //将命名空间和具体的mapper类绑定  但是不知道为啥要分开绑  一个mapper它不香么
+      //放入mapper
       bindMapperForNamespace();
     }
     //清空缓存 也不知道啥
@@ -215,7 +215,7 @@ public class XMLMapperBuilder extends BaseBuilder {
       boolean readWrite = !context.getBooleanAttribute("readOnly", false);
       boolean blocking = context.getBooleanAttribute("blocking", false);
       Properties props = context.getChildrenAsProperties();
-      //解释的时候new出二级缓存关联对象
+      //解释的时候new出二级缓存关联对象  缓存对象
       builderAssistant.useNewCache(typeClass, evictionClass, flushInterval, size, readWrite, blocking, props);
     }
   }

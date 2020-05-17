@@ -42,12 +42,17 @@ public class MapperRegistry {
   }
 
   @SuppressWarnings("unchecked")
+  //factory工厂包含一整套环境
+  //最后的session  mapper就是从这里取值  session就是你当前的session
+  //每次打开的session是有一整套xml环境配置的
   public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
+    //存进去的时候就是MapperProxyFactory  取出来也是 进去看
     final MapperProxyFactory<T> mapperProxyFactory = (MapperProxyFactory<T>) knownMappers.get(type);
     if (mapperProxyFactory == null) {
       throw new BindingException("Type " + type + " is not known to the MapperRegistry.");
     }
     try {
+      //接着走
       return mapperProxyFactory.newInstance(sqlSession);
     } catch (Exception e) {
       throw new BindingException("Error getting mapper instance. Cause: " + e, e);

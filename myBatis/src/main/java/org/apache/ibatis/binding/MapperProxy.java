@@ -45,12 +45,14 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
   private final Class<T> mapperInterface;
   private final Map<Method, MapperMethodInvoker> methodCache;
 
+  //代理类是有一整套环境的
   public MapperProxy(SqlSession sqlSession, Class<T> mapperInterface, Map<Method, MapperMethodInvoker> methodCache) {
     this.sqlSession = sqlSession;
     this.mapperInterface = mapperInterface;
     this.methodCache = methodCache;
   }
 
+  //初始化  先不管
   static {
     Method privateLookupIn;
     try {
@@ -76,13 +78,16 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
     }
     lookupConstructor = lookup;
   }
-
+  //代理类最后执行  就是这个invoke
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
     try {
+      //前者是代理类  后者是实际类  为什么会有这种情况出现？
+      //可能有不同的实现
       if (Object.class.equals(method.getDeclaringClass())) {
         return method.invoke(this, args);
       } else {
+        //一般走这里
         return cachedInvoker(method).invoke(proxy, method, args, sqlSession);
       }
     } catch (Throwable t) {
@@ -90,8 +95,11 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
     }
   }
 
+  //此方法是最终执行方法
+  //MapperMethodInvoker   真正执行方法的invoker
   private MapperMethodInvoker cachedInvoker(Method method) throws Throwable {
     try {
+      //先去获取一级缓存 没有走下面
       return methodCache.computeIfAbsent(method, m -> {
         if (m.isDefault()) {
           try {
@@ -105,7 +113,7 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
             throw new RuntimeException(e);
           }
         } else {
-          //MapperMethod 方法的载体
+          //MapperMethod调用者   第一次走
           return new PlainMethodInvoker(new MapperMethod(mapperInterface, method, sqlSession.getConfiguration()));
         }
       });
@@ -142,6 +150,7 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
       this.mapperMethod = mapperMethod;
     }
 
+    //没事有缓存时调用这个
     @Override
     public Object invoke(Object proxy, Method method, Object[] args, SqlSession sqlSession) throws Throwable {
       return mapperMethod.execute(sqlSession, args);

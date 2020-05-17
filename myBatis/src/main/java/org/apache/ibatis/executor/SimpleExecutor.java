@@ -52,6 +52,7 @@ public class SimpleExecutor extends BaseExecutor {
       //执行sql
       return handler.update(stmt);
     } finally {
+      //事物的执行在这里 但是当前用例是默认事物
       closeStatement(stmt);
     }
   }
@@ -60,7 +61,9 @@ public class SimpleExecutor extends BaseExecutor {
   public <E> List<E> doQuery(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) throws SQLException {
     Statement stmt = null;
     try {
+      //全局文件
       Configuration configuration = ms.getConfiguration();
+      //StatementH操作器
       StatementHandler handler = configuration.newStatementHandler(wrapper, ms, parameter, rowBounds, resultHandler, boundSql);
       stmt = prepareStatement(handler, ms.getStatementLog());
       return handler.query(stmt, resultHandler);
@@ -86,7 +89,7 @@ public class SimpleExecutor extends BaseExecutor {
 
   private Statement prepareStatement(StatementHandler handler, Log statementLog) throws SQLException {
     Statement stmt;
-    //获取链接
+    //获取链接  进去看事物还是原生事物  所有东西无非包装JDBC
     Connection connection = getConnection(statementLog);
     //预编译
     stmt = handler.prepare(connection, transaction.getTimeout());

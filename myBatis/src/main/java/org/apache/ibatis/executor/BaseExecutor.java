@@ -56,7 +56,7 @@ public abstract class BaseExecutor implements Executor {
   protected Executor wrapper;
 
   protected ConcurrentLinkedQueue<DeferredLoad> deferredLoads;
-  protected PerpetualCache localCache;
+  protected PerpetualCache localCache; //缓存
   protected PerpetualCache localOutputParameterCache;
   protected Configuration configuration;
 
@@ -133,9 +133,11 @@ public abstract class BaseExecutor implements Executor {
 
   @Override
   public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler) throws SQLException {
+    //这就是语句
     BoundSql boundSql = ms.getBoundSql(parameter);
-    //组装缓存key
+    //组装缓存key 组成key的规则进里面看  查询不会有删除缓存  但是其他增删改查会有
     CacheKey key = createCacheKey(ms, parameter, rowBounds, boundSql);
+    //枕真正的查询
     return query(ms, parameter, rowBounds, resultHandler, key, boundSql);
   }
 
@@ -146,16 +148,17 @@ public abstract class BaseExecutor implements Executor {
     if (closed) {
       throw new ExecutorException("Executor was closed.");
     }
+    //这里就是配置的缓存是否刷新的属性
     if (queryStack == 0 && ms.isFlushCacheRequired()) {
       clearLocalCache();
     }
     List<E> list;
     try {
       queryStack++;
-      //查询缓存
+      //查询缓存 写两条sql语句能进到这里  这个localCache是从哪里来的  看前面conf  之后解析mapper 步骤
       list = resultHandler == null ? (List<E>) localCache.getObject(key) : null;
       if (list != null) {
-        //再次重设  目前不知道为什么
+        //再次重设   将入参出参缓存
         handleLocallyCachedOutputParameters(ms, key, parameter, boundSql);
       } else {
         //查询数据库
@@ -326,13 +329,14 @@ public abstract class BaseExecutor implements Executor {
 
   private <E> List<E> queryFromDatabase(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey key, BoundSql boundSql) throws SQLException {
     List<E> list;
-    //放入缓存  这一步是干啥
+    //放入缓存  这里估计和高并发有关  都算不上锁  可能是通知别人有人再查询了
     localCache.putObject(key, EXECUTION_PLACEHOLDER);
     try {
       list = doQuery(ms, parameter, rowBounds, resultHandler, boundSql);
     } finally {
       localCache.removeObject(key);
     }
+    //放入缓存的
     localCache.putObject(key, list);
     if (ms.getStatementType() == StatementType.CALLABLE) {
       localOutputParameterCache.putObject(key, parameter);

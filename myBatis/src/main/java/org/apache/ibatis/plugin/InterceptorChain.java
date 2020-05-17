@@ -26,9 +26,15 @@ public class InterceptorChain {
 
   private final List<Interceptor> interceptors = new ArrayList<>();
 
+  //将执行器放进来
   public Object pluginAll(Object target) {
+    //所有的拦截器
     for (Interceptor interceptor : interceptors) {
       //说白了就是构建一个代理类  然后每一个拦截器可以说都是一个代理套代理
+      //interceptor.plugin(target)这个就是返回一个代理
+      //那么一直循环就是一直代理
+      //拦截器1  拦截器3  拦截器3  拦截器4  ----> target
+      //List是有顺序的  所以xml  要按顺序来
       target = interceptor.plugin(target);
     }
     return target;

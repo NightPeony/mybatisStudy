@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import niwo.data.mybatis.MybatiesPo;
 import niwo.mapper.MybatiesPoMapper;
 import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
@@ -23,7 +24,8 @@ public class testXml {
        //2.创建SqlSessionFactory工厂
        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(in);
        //3.使用工厂生产SqlSession对象
-       SqlSession session = sqlSessionFactory.openSession();
+       SqlSession session = sqlSessionFactory.openSession(false);
+       //返回代理类
        MybatiesPoMapper mapper = session.getMapper(MybatiesPoMapper.class);
        //MybatiesPo po = mapper.getPo(1);
        List<MybatiesPo> pos = mapper.getPoAll();

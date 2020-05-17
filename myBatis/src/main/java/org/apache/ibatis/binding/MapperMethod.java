@@ -44,22 +44,24 @@ import org.apache.ibatis.session.SqlSession;
  * @author Lasse Voss
  * @author Kazuki Shimizu
  */
+//映射方法
 public class MapperMethod {
 
   private final SqlCommand command;
   private final MethodSignature method;
 
   public MapperMethod(Class<?> mapperInterface, Method method, Configuration config) {
-    //映射的方法
+    //映射的方法两个信息  他的类型  他的名字字符表达
     this.command = new SqlCommand(config, mapperInterface, method);
-    //方法信息
+    //方法各种信息参数类型  返回类型
     this.method = new MethodSignature(config, mapperInterface, method);
   }
 
   public Object execute(SqlSession sqlSession, Object[] args) {
     Object result;
+    //六种类型,只在意四种,其他的我自己都没用过    UNKNOWN, INSERT, UPDATE, DELETE, SELECT, FLUSH
     switch (command.getType()) {
-      //真正的执行步骤
+      //真正的执行步骤  除查询外都是session，那么就是和事物提交有关系了  查询没有和事物扯上关系
       case INSERT: {
         //解析参数
         Object param = method.convertArgsToSqlCommandParam(args);
@@ -77,18 +79,25 @@ public class MapperMethod {
         result = rowCountResult(sqlSession.delete(command.getName(), param));
         break;
       }
-      //这一步才有缓存
+      //第一个看查询
       case SELECT:
+        //方法信息是在什么时候构建的，你在构建方法的时候  将session中的信息解析成上面两个对象
+        //是否是返回空的  并且  还有handler  result = null;
         if (method.returnsVoid() && method.hasResultHandler()) {
           executeWithResultHandler(sqlSession, args);
           result = null;
+          //是否是多条   重点看这个  其他都是转换问题
         } else if (method.returnsMany()) {
           result = executeForMany(sqlSession, args);
+          //是否是map
         } else if (method.returnsMap()) {
           result = executeForMap(sqlSession, args);
+          //这是？？
         } else if (method.returnsCursor()) {
           result = executeForCursor(sqlSession, args);
         } else {
+          //其他一律走单条
+          //参数
           Object param = method.convertArgsToSqlCommandParam(args);
           result = sqlSession.selectOne(command.getName(), param);
           if (method.returnsOptional()
@@ -145,9 +154,12 @@ public class MapperMethod {
 
   private <E> Object executeForMany(SqlSession sqlSession, Object[] args) {
     List<E> result;
+    //显示处理参数  Object 这玩意就是一个map  所以我们入参一般都可以写map的原因
     Object param = method.convertArgsToSqlCommandParam(args);
+    //是否有分页
     if (method.hasRowBounds()) {
       RowBounds rowBounds = method.extractRowBounds(args);
+      //DefaultSqlSession
       result = sqlSession.selectList(command.getName(), param, rowBounds);
     } else {
       result = sqlSession.selectList(command.getName(), param);

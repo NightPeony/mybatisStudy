@@ -110,7 +110,9 @@ public class Configuration {
 
   protected Properties variables = new Properties();
   protected ReflectorFactory reflectorFactory = new DefaultReflectorFactory();
+  //objectFactory 生产对象的工厂最后的返回对象是这个创建出来的  你可以new自己的  一般用不上
   protected ObjectFactory objectFactory = new DefaultObjectFactory();
+  //对于指定的对象进行特殊的加工
   protected ObjectWrapperFactory objectWrapperFactory = new DefaultObjectWrapperFactory();
 
   protected boolean lazyLoadingEnabled = false;
@@ -125,12 +127,14 @@ public class Configuration {
    */
   protected Class<?> configurationFactory;
 
+  //获取代理类的注册中心啊
   protected final MapperRegistry mapperRegistry = new MapperRegistry(this);
+  //初始化的时候就将拦截器加入进来了
   protected final InterceptorChain interceptorChain = new InterceptorChain();
   protected final TypeHandlerRegistry typeHandlerRegistry = new TypeHandlerRegistry(this);
   protected final TypeAliasRegistry typeAliasRegistry = new TypeAliasRegistry();
   protected final LanguageDriverRegistry languageRegistry = new LanguageDriverRegistry();
-
+  //每个sql节点的信息承载  一条sql的所有信息
   protected final Map<String, MappedStatement> mappedStatements = new StrictMap<MappedStatement>("Mapped Statements collection")
       .conflictMessageProducer((savedValue, targetValue) ->
           ". please check " + savedValue.getResource() + " and " + targetValue.getResource());
@@ -630,7 +634,7 @@ public class Configuration {
       executor = new SimpleExecutor(this, transaction);
     }
     //是否打开缓存
-    //默认是打开的
+    //默认是打开的    这里是一级缓存
     if (cacheEnabled) {
       executor = new CachingExecutor(executor);
     }

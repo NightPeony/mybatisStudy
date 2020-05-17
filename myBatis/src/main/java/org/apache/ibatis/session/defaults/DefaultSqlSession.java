@@ -48,9 +48,10 @@ import org.apache.ibatis.session.SqlSession;
  */
 public class DefaultSqlSession implements SqlSession {
 
+  //环境加执行器  核心东西
   private final Configuration configuration;
   private final Executor executor;
-
+  //自动提交
   private final boolean autoCommit;
   private boolean dirty;
   private List<Cursor<?>> cursorList;
@@ -141,10 +142,15 @@ public class DefaultSqlSession implements SqlSession {
     return this.selectList(statement, parameter, RowBounds.DEFAULT);
   }
 
+  //名字  入参 分页信息
   @Override
   public <E> List<E> selectList(String statement, Object parameter, RowBounds rowBounds) {
     try {
+      //默认都是走到这里来
+      //MappedStatement  这个对象在解析的时候存入的conf  是每个节点的那个信息承载
       MappedStatement ms = configuration.getMappedStatement(statement);
+      //默认是这个   构建的session可以回头看  CachingExecutor
+      //ms节点信息-->核心   wrapCollection:参数转换  集合啊  数组啊  map
       return executor.query(ms, wrapCollection(parameter), rowBounds, Executor.NO_RESULT_HANDLER);
     } catch (Exception e) {
       throw ExceptionFactory.wrapException("Error querying database.  Cause: " + e, e);
@@ -190,6 +196,7 @@ public class DefaultSqlSession implements SqlSession {
     return update(statement, null);
   }
 
+  //更新
   @Override
   public int update(String statement, Object parameter) {
     try {

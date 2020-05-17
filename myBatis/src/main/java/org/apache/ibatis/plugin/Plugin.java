@@ -38,6 +38,7 @@ public class Plugin implements InvocationHandler {
   private Plugin(Object target, Interceptor interceptor, Map<Class<?>, Set<Method>> signatureMap) {
     this.target = target;
     this.interceptor = interceptor;
+    //拦截器上面的注解
     this.signatureMap = signatureMap;
   }
 

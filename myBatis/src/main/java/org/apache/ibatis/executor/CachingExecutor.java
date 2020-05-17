@@ -39,6 +39,7 @@ import org.apache.ibatis.transaction.Transaction;
 public class CachingExecutor implements Executor {
 
   private final Executor delegate;
+  //事物缓存器
   private final TransactionalCacheManager tcm = new TransactionalCacheManager();
 
   public CachingExecutor(Executor delegate) {
@@ -82,6 +83,7 @@ public class CachingExecutor implements Executor {
     return delegate.queryCursor(ms, parameter, rowBounds);
   }
 
+  //二级缓存
   @Override
   public <E> List<E> query(MappedStatement ms, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler) throws SQLException {
     BoundSql boundSql = ms.getBoundSql(parameterObject);
@@ -92,7 +94,7 @@ public class CachingExecutor implements Executor {
   @Override
   public <E> List<E> query(MappedStatement ms, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, CacheKey key, BoundSql boundSql)
       throws SQLException {
-    //获取缓存元素  很多时候get不是数据  是元素
+    //获取缓存对象
     Cache cache = ms.getCache();
     if (cache != null) {
       //是否要刷新缓存
@@ -102,7 +104,9 @@ public class CachingExecutor implements Executor {
         @SuppressWarnings("unchecked")
         List<E> list = (List<E>) tcm.getObject(cache, key);
         if (list == null) {
+          //就是不配置二级 的查询步骤 baseExcutor
           list = delegate.query(ms, parameterObject, rowBounds, resultHandler, key, boundSql);
+          //放入缓存
           tcm.putObject(cache, key, list); // issue #578 and #116
         }
         return list;
