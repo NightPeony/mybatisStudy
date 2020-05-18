@@ -64,6 +64,16 @@
                       <property name="password" value="epbox_2018"></property>
                 </dataSource>
         </environment>
+        <environment id="myself">
+            <transactionManager type="JDBC"></transactionManager>
+                <dataSource type="POOLED">
+                    <!--属性名如何查找，看源码类中的set方法  -->
+                    <property name="driver" value="com.mysql.jdbc.Driver"></property>
+                    <property name="url" value="jdbc:mysql://47.107.84.162:3306/hm?useSSL=false"></property>
+                    <property name="username" value="mysql"></property>
+                    <property name="password" value="mysql"></property>
+                </dataSource>
+        </environment>
     </environments>
 
     <!--数据库供应商  mysql oracle等  和上面开发环境不一样-->
@@ -73,8 +83,8 @@
     </databaseIdProvider>
 
   <!--数据库厂商标示 -->
-<!--       <databaseIdProvider></databaseIdProvider>-->
-  <!-- 映射器 -->
+<!--       <databaseIdProvider></>-->
+  <!-- 映射器 -->databaseIdProvider
     <mappers>
         <mapper resource="mapper/MybatisTestMapper.xml"/>
     </mappers>
