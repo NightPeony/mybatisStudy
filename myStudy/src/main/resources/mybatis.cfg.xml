@@ -69,7 +69,7 @@
                 <dataSource type="POOLED">
                     <!--属性名如何查找，看源码类中的set方法  -->
                     <property name="driver" value="com.mysql.jdbc.Driver"></property>
-                    <property name="url" value="jdbc:mysql://www.niwo.site:3306/hm?useSSL=false"></property>
+                    <property name="url" value="jdbc:mysql://www.niwo.site:3306/hell?useSSL=false"></property>
                     <property name="username" value="hb"></property>
                     <property name="password" value="678954hb"></property>
                 </dataSource>
