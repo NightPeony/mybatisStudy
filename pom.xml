@@ -16,7 +16,9 @@
     <packaging>pom</packaging>
     <version>3.5.5-SNAPSHOT</version>
     <modules>
+    	<!-- 学习工程 -->
         <module>myStudy</module>
+        <!-- 原生工程 -->
         <module>myBatis</module>
     </modules>
 
