@@ -1,8 +1,6 @@
-package niwo.data.mybatis;
+package src.main.site.niwo.www.data.mybatis;
 
-import lombok.Data;
 
-import java.util.Date;
 
 /**
  * Created by web on 2020/5/12.

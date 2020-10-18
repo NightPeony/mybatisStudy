@@ -1,4 +1,4 @@
-package niwo.mapper;
+package src.main.site.niwo.www.mapper;
 
 import niwo.data.mybatis.MybatiesPo;
 

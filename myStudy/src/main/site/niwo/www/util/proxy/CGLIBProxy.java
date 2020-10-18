@@ -1,4 +1,4 @@
-package niwo.util.proxy;
+package src.main.site.niwo.www.util.proxy;
 
 
 import net.sf.cglib.proxy.Enhancer;
