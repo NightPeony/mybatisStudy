@@ -2,6 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<parent>
+		<groupId>org.mybatis</groupId>
+		<artifactId>mybatis-parent</artifactId>
+		<version>31</version>
+		<relativePath />
+	</parent>
+
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>study</groupId>
 	<artifactId>analysis</artifactId>
@@ -14,9 +22,16 @@
 		<mysql.version>5.1.45</mysql.version>
 		<lombok.version>1.18.16</lombok.version>
 		<test.version>4.13.1</test.version>
+		<java.version>1.8</java.version>
 	</properties>
 
-	<dependencyManagement>
+	<modules>
+		<!-- 学习工程 -->
+		<module>myStudy</module>
+		<!-- 原生工程 -->
+		<module>mybatis</module>
+	</modules>
+
 		<dependencies>
 			<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
 			<dependency>
@@ -56,13 +71,17 @@
 				<version>${mysql.version}</version>
 			</dependency>
 		</dependencies>
-	</dependencyManagement>
 
-	<modules>
-		<!-- 学习工程 -->
-		<module>myStudy</module>
-		<!-- 原生工程 -->
-		<module>myBatis</module>
-	</modules>
+		<build>
+			<plugins>
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>${java.version}</source>
+						<target>${java.version}</target>
+					</configuration>
+				</plugin>
+			</plugins>
+		</build>
 
 </project>

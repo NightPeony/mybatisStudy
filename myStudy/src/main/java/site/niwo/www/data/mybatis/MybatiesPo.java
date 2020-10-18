@@ -1,6 +1,9 @@
-package src.main.site.niwo.www.data.mybatis;
+package site.niwo.www.data.mybatis;
 
 
+import lombok.Data;
+
+import java.util.Date;
 
 /**
  * Created by web on 2020/5/12.
@@ -15,4 +18,6 @@ public class MybatiesPo {
     private int number;
 
     private Date date;
+
+
 }

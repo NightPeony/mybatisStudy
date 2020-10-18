@@ -1,4 +1,4 @@
-package src.main.site.niwo.www.util.xmlParse;
+package site.niwo.www.util.xmlParse;
 
 import org.xml.sax.SAXException;
 

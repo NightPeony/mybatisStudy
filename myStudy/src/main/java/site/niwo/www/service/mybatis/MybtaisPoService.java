@@ -1,4 +1,4 @@
-package src.main.site.niwo.www.service.mybatis;
+package site.niwo.www.service.mybatis;
 
 /**
  * Created by web on 2020/5/12.

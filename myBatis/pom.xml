@@ -20,9 +20,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>study</artifactId>
-    <groupId>myBatisStudy</groupId>
-    <version>3.5.5-SNAPSHOT</version>
+    <groupId>org.mybatis</groupId>
+    <artifactId>mybatis-parent</artifactId>
+    <version>31</version>
+    <relativePath />
   </parent>
 
   <artifactId>mybatis</artifactId>

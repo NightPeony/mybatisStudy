@@ -1,13 +1,13 @@
 package niwo.myBatiseStudy;
 
 import com.alibaba.fastjson.JSON;
-import niwo.data.mybatis.MybatiesPo;
-import niwo.mapper.MybatiesPoMapper;
 import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import site.niwo.www.data.mybatis.MybatiesPo;
+import site.niwo.www.mapper.MybatiesPoMapper;
+
 
 import java.io.IOException;
 import java.io.InputStream;

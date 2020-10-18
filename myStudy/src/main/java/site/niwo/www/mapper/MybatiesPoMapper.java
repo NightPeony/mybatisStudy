@@ -1,6 +1,7 @@
-package src.main.site.niwo.www.mapper;
+package site.niwo.www.mapper;
 
-import niwo.data.mybatis.MybatiesPo;
+
+import site.niwo.www.data.mybatis.MybatiesPo;
 
 import java.util.List;
 
