@@ -109,12 +109,16 @@ public class ClassLoaderWrapper {
    * @return the resource or null
    */
   InputStream getResourceAsStream(String resource, ClassLoader[] classLoader) {
+    //传了四个加载器
     for (ClassLoader cl : classLoader) {
       if (null != cl) {
-
+        System.out.println("getResourceAsStream classLoader:" + cl);
+        //加载资源文件 相对路劲加载不到  加个绝对路劲在加载一次
         // try to find the resource as passed
+        System.out.println("getResourceAsStream path:" + resource);
         InputStream returnValue = cl.getResourceAsStream(resource);
-
+        String path = cl.getResource("").getPath();
+        System.out.println("getResourceAsStream root path:" + path);
         // now, some class loaders want this leading "/", so we'll add it and try again if we didn't find the resource
         if (null == returnValue) {
           returnValue = cl.getResourceAsStream("/" + resource);
@@ -202,12 +206,20 @@ public class ClassLoaderWrapper {
   }
 
   ClassLoader[] getClassLoaders(ClassLoader classLoader) {
+    //此除传来四个加载器
+    /*
+    * 加载器的知识
+    * 1.根类加载器：核心类
+    * 2.扩展类加载器：jre
+    * 3.app加载器：一般我们继承这个
+    * 采用双亲委派  就是子类加载不到  给爸爸找
+    * */
     return new ClassLoader[]{
-        classLoader,
-        defaultClassLoader,
-        Thread.currentThread().getContextClassLoader(),
-        getClass().getClassLoader(),
-        systemClassLoader};
+        classLoader,//传入的
+        defaultClassLoader, //默认的  目前没看到赋值
+        Thread.currentThread().getContextClassLoader(),//当前加载的加载器
+        getClass().getClassLoader(),//当前加载的加载器
+        systemClassLoader};//系统加载器
   }
 
 }

@@ -42,9 +42,7 @@ public class MapperRegistry {
   }
 
   @SuppressWarnings("unchecked")
-  //factory工厂包含一整套环境
-  //最后的session  mapper就是从这里取值  session就是你当前的session
-  //每次打开的session是有一整套xml环境配置的
+  //返回代理类
   public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
     //存进去的时候就是MapperProxyFactory  取出来也是 进去看
     final MapperProxyFactory<T> mapperProxyFactory = (MapperProxyFactory<T>) knownMappers.get(type);

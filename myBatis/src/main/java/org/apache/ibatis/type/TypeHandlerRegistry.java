@@ -76,6 +76,11 @@ public final class TypeHandlerRegistry {
    * @param configuration a MyBatis configuration
    * @since 3.5.4
    */
+  /*
+  *
+  * 基本类型处理器
+  *
+  * */
   public TypeHandlerRegistry(Configuration configuration) {
     this.unknownTypeHandler = new UnknownTypeHandler(configuration);
 

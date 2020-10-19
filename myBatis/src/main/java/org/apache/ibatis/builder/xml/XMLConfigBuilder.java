@@ -74,9 +74,11 @@ public class XMLConfigBuilder extends BaseBuilder {
   }
 
   public XMLConfigBuilder(InputStream inputStream, String environment, Properties props) {
+    //XPathParser xml解析器  大同小异
     this(new XPathParser(inputStream, true, props, new XMLMapperEntityResolver()), environment, props);
   }
 
+  //XMLConfigBuilder xmlconfig解析器  里面包含基本环境和xml解析器  从这里开始有了config
   private XMLConfigBuilder(XPathParser parser, String environment, Properties props) {
     //Configuration   专门存放配置的类
     super(new Configuration());

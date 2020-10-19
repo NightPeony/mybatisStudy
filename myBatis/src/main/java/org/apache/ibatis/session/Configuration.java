@@ -803,6 +803,7 @@ public class Configuration {
   }
 
   public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
+    //mapperRegistry 这个想都不用想  是解析config那些步骤放进去的
     return mapperRegistry.getMapper(type, sqlSession);
   }
 

@@ -18,13 +18,14 @@ import java.util.List;
 public class testXml {
 
    public static void main(String[] args) throws IOException {
-       //1.读取配置文件
+       //1.读取配置文件 为确保准确（加载都是几个加载器选用 路劲的转换）
        InputStream in = Resources.getResourceAsStream("mybatis.cfg.xml");
-       //2.创建SqlSessionFactory工厂
+       //2.创建SqlSessionFactory工厂  里面就是一个构建好的config
        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(in);
-       //3.使用工厂生产SqlSession对象
+       //3.使用工厂生产SqlSession对象  SqlSession里面有事务  执行器  核心内容
+       //事务在这里因该摄入理解
        SqlSession session = sqlSessionFactory.openSession(false);
-       //返回代理类
+       //返回代理类  上面是环境  这里的就是具体操作和执行的开始 DefaultSqlSession
        MybatiesPoMapper mapper = session.getMapper(MybatiesPoMapper.class);
        //MybatiesPo po = mapper.getPo(1);
        List<MybatiesPo> pos = mapper.getPoAll();

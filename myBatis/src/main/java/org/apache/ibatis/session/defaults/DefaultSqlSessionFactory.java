@@ -94,7 +94,7 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
       //默认的执行环境
       final Environment environment = configuration.getEnvironment();
       //从默认环境中获取事物工厂
-      //事物就是一个对象  里面存放几个类型
+      //事物以后再说
       final TransactionFactory transactionFactory = getTransactionFactoryFromEnvironment(environment);
       tx = transactionFactory.newTransaction(environment.getDataSource(), level, autoCommit);
       //构建一个完成的执行器
