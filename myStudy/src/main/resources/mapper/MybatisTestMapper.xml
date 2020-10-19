@@ -18,7 +18,7 @@
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!--命名空间应该是对应接口的包名+接口名 -->
-<mapper namespace="niwo.mapper.MybatiesPoMapper">
+<mapper namespace="site.niwo.www.mapper.MybatiesPoMapper">
     <!--一级缓存默认开启，不需要管-->
     <cache/>
 

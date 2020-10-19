@@ -37,11 +37,11 @@
 
     <!--别名-->
     <typeAliases>
-      <typeAlias type="niwo.data.mybatis.MybatiesPo" alias="MybatiesPo"></typeAlias>
+      <typeAlias type="site.niwo.www.data.mybatis.MybatiesPo" alias="MybatiesPo"></typeAlias>
     </typeAliases>
 
     <plugins>
-      <plugin interceptor="niwo.myInterface.MybatisInterface"></plugin>
+      <plugin interceptor="site.niwo.www.myInterface.MybatisInterface"></plugin>
     </plugins>
 
     <!--类型处理器-->
@@ -53,7 +53,7 @@
     <!--插件 -->
 <!--    <plugins></plugins>-->
     <!--开发环境  可以多个环境开发-->
-    <environments default="developer">
+    <environments default="myself">
         <environment id="developer">
             <transactionManager type="JDBC"></transactionManager>
                 <dataSource type="POOLED">
@@ -70,8 +70,8 @@
                     <!--属性名如何查找，看源码类中的set方法  -->
                     <property name="driver" value="com.mysql.jdbc.Driver"></property>
                     <property name="url" value="jdbc:mysql://www.niwo.site:3306/hell?useSSL=false"></property>
-                    <property name="username" value="hb"></property>
-                    <property name="password" value="678954hb"></property>
+                    <property name="username" value="root"></property>
+                    <property name="password" value="678954hhb"></property>
                 </dataSource>
         </environment>
     </environments>
