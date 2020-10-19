@@ -8,7 +8,6 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import site.niwo.www.data.mybatis.MybatiesPo;
 import site.niwo.www.mapper.MybatiesPoMapper;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -35,5 +34,6 @@ public class testXml {
        //6.释放资源
        session.close();
        in.close();
+       System.out.println("=================");
    }
 }
