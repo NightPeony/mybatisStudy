@@ -15,15 +15,6 @@
  */
 package org.apache.ibatis.binding;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import org.apache.ibatis.annotations.Flush;
 import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.cursor.Cursor;
@@ -38,6 +29,15 @@ import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 /**
  * @author Clinton Begin
  * @author Eduardo Macarron
@@ -50,22 +50,31 @@ public class MapperMethod {
   private final SqlCommand command;
   private final MethodSignature method;
 
+  /*
+  * mapperInterface 对应的mapper
+  * method 执行的方法  config 配置
+  * MapperMethod 是将method封装
+  * */
   public MapperMethod(Class<?> mapperInterface, Method method, Configuration config) {
-    //映射的方法两个信息  他的类型  他的名字字符表达
+    //sql信息  sql的类型 增删改查，sql的名字
     this.command = new SqlCommand(config, mapperInterface, method);
-    //方法各种信息参数类型  返回类型
+    //方法各种信息参数类型  返回类型，注解信息  注解key等
     this.method = new MethodSignature(config, mapperInterface, method);
   }
 
+  //最后的执行  很喜欢封装一层啊  不是代理就是自己再包一层
   public Object execute(SqlSession sqlSession, Object[] args) {
     Object result;
-    //六种类型,只在意四种,其他的我自己都没用过    UNKNOWN, INSERT, UPDATE, DELETE, SELECT, FLUSH
+    //解析数据在解析configrution那里看  构建SqlSessionFactory那里看
     switch (command.getType()) {
-      //真正的执行步骤  除查询外都是session，那么就是和事物提交有关系了  查询没有和事物扯上关系
       case INSERT: {
-        //解析参数
+        /*
+        * UPDATE  DELETE  INSERT走的都是update同一套逻辑
+        * convertArgsToSqlCommandParam 解析参数
+        *
+        *
+        * */
         Object param = method.convertArgsToSqlCommandParam(args);
-        //处理返回值
         result = rowCountResult(sqlSession.insert(command.getName(), param));
         break;
       }

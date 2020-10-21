@@ -15,6 +15,9 @@
  */
 package org.apache.ibatis.binding;
 
+import org.apache.ibatis.reflection.ExceptionUtil;
+import org.apache.ibatis.session.SqlSession;
+
 import java.io.Serializable;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -26,12 +29,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.apache.ibatis.reflection.ExceptionUtil;
-import org.apache.ibatis.session.SqlSession;
-
 /**
  * @author Clinton Begin
  * @author Eduardo Macarron
+ * 代理类
  */
 public class MapperProxy<T> implements InvocationHandler, Serializable {
   //由此处可见InvocationHandler   用的是jdk代理  必须要有接口
@@ -52,7 +53,7 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
     this.methodCache = methodCache;
   }
 
-  //初始化  先不管
+  //初始化
   static {
     Method privateLookupIn;
     try {
@@ -78,16 +79,16 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
     }
     lookupConstructor = lookup;
   }
-  //代理类最后执行  就是这个invoke
+
+  //当代理执行的时候具体调用invoke  这个是JDK代理的规则
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
     try {
-      //前者是代理类  后者是实际类  为什么会有这种情况出现？
-      //可能有不同的实现
+      //这一句  看不懂
       if (Object.class.equals(method.getDeclaringClass())) {
         return method.invoke(this, args);
       } else {
-        //一般走这里
+        //一般处理逻辑
         return cachedInvoker(method).invoke(proxy, method, args, sqlSession);
       }
     } catch (Throwable t) {
@@ -95,11 +96,13 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
     }
   }
 
-  //此方法是最终执行方法
-  //MapperMethodInvoker   真正执行方法的invoker
+  //MapperMethodInvoker
   private MapperMethodInvoker cachedInvoker(Method method) throws Throwable {
     try {
-      //先去获取一级缓存 没有走下面
+      /*
+      * computeIfAbsent为空的实现
+      * 一般有值走下面
+      * */
       return methodCache.computeIfAbsent(method, m -> {
         if (m.isDefault()) {
           try {
@@ -113,7 +116,7 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
             throw new RuntimeException(e);
           }
         } else {
-          //MapperMethod调用者   第一次走
+          //不为空走这里  一般走这里，进去看看MapperMethod
           return new PlainMethodInvoker(new MapperMethod(mapperInterface, method, sqlSession.getConfiguration()));
         }
       });
@@ -145,12 +148,13 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
   private static class PlainMethodInvoker implements MapperMethodInvoker {
     private final MapperMethod mapperMethod;
 
+    //MapperMethod 执行方法
     public PlainMethodInvoker(MapperMethod mapperMethod) {
       super();
       this.mapperMethod = mapperMethod;
     }
 
-    //没事有缓存时调用这个
+    //调用
     @Override
     public Object invoke(Object proxy, Method method, Object[] args, SqlSession sqlSession) throws Throwable {
       return mapperMethod.execute(sqlSession, args);
