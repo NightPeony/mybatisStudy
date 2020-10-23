@@ -15,13 +15,6 @@
  */
 package org.apache.ibatis.executor.statement;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.List;
-
 import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.keygen.Jdbc3KeyGenerator;
@@ -31,6 +24,9 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ResultSetType;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
+
+import java.sql.*;
+import java.util.List;
 
 /**
  * @author Clinton Begin
@@ -43,11 +39,18 @@ public class PreparedStatementHandler extends BaseStatementHandler {
 
   @Override
   public int update(Statement statement) throws SQLException {
+    /**
+     * 用于执行静态SQL语句的对象
+     */
     PreparedStatement ps = (PreparedStatement) statement;
+    /*JDBC执行*/
     ps.execute();
+    /*获取结果*/
     int rows = ps.getUpdateCount();
     Object parameterObject = boundSql.getParameterObject();
+    /* 键生成器 */
     KeyGenerator keyGenerator = mappedStatement.getKeyGenerator();
+    /*主键返回*/
     keyGenerator.processAfter(executor, mappedStatement, ps, parameterObject);
     return rows;
   }

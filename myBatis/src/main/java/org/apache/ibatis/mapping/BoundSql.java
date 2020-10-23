@@ -15,13 +15,13 @@
  */
 package org.apache.ibatis.mapping;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.property.PropertyTokenizer;
 import org.apache.ibatis.session.Configuration;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * An actual SQL String got from an {@link SqlSource} after having processed any dynamic content.
@@ -31,6 +31,12 @@ import org.apache.ibatis.session.Configuration;
  * <p>
  * Can also have additional parameters that are created by the dynamic language (for loops, bind...).
  *
+ * 一个实际的SQL字符串，从后处理任何动态内容。
+ * SQL可能有SQL占位符“?”和一个参数映射列表(有序)
+ * 包含每个参数的附加信息(至少要读取的输入对象的属性名)
+ * 来自的值)。
+ * 还可以有由动态语言创建的附加参数(对于循环，bind…)。
+ * 作者克林顿开始
  * @author Clinton Begin
  */
 public class BoundSql {

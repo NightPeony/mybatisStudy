@@ -1,6 +1,5 @@
 package niwo.myBatiseStudy;
 
-import com.alibaba.fastjson.JSON;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -10,12 +9,13 @@ import site.niwo.www.mapper.MybatiesPoMapper;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
+import java.util.Date;
+import java.util.UUID;
 
 /**
  * Created by web on 2020/5/12.
  */
-public class testXml {
+public class TestXml {
 
    public static void main(String[] args) throws IOException {
        //1.读取配置文件 为确保准确（加载都是几个加载器选用 路劲的转换）
@@ -27,14 +27,27 @@ public class testXml {
        SqlSession session = sqlSessionFactory.openSession(false);
        //返回代理类  上面是环境  这里的就是具体操作和执行的开始 DefaultSqlSession
        MybatiesPoMapper mapper = session.getMapper(MybatiesPoMapper.class);
-       //MybatiesPo po = mapper.getPo(1);
-       List<MybatiesPo> pos = mapper.getPoAll();
-       List<MybatiesPo> pos2 = mapper.getPoAll();
-       System.out.println(JSON.toJSONString(pos));
-       System.out.println(JSON.toJSONString(pos2));
+       TestXml testXml = new TestXml();
+       testXml.insert(mapper);
+       ////MybatiesPo po = mapper.getPo(1);
+       //List<MybatiesPo> pos = mapper.getPoAll();
+       //List<MybatiesPo> pos2 = mapper.getPoAll();
+       //System.out.println(JSON.toJSONString(pos));
+       //System.out.println(JSON.toJSONString(pos2));
+
        //6.释放资源
        session.close();
        in.close();
        System.out.println("=================");
    }
+
+   public int insert(MybatiesPoMapper mapper){
+       MybatiesPo mybatiesPo = new MybatiesPo();
+       mybatiesPo.setDate(new Date());
+       mybatiesPo.setName(UUID.randomUUID().toString());
+       Double number = Math.random() * 100;
+       mybatiesPo.setNumber(number.intValue());
+       return mapper.insertPo(mybatiesPo);
+   }
+
 }
