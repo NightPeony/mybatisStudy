@@ -50,7 +50,12 @@ public class PreparedStatementHandler extends BaseStatementHandler {
     Object parameterObject = boundSql.getParameterObject();
     /* 键生成器 */
     KeyGenerator keyGenerator = mappedStatement.getKeyGenerator();
-    /*主键返回*/
+    /**
+     * executor  执行器
+     * mappedStatement 映射语句
+     * 执行静态sql对象
+     * parameterObject 参数对象
+     */
     keyGenerator.processAfter(executor, mappedStatement, ps, parameterObject);
     return rows;
   }
