@@ -69,7 +69,12 @@ public class CacheKey implements Cloneable, Serializable {
     return updateList.size();
   }
 
+  /**
+   * 这里是个算法来着  看不懂
+   * @param object
+   */
   public void update(Object object) {
+
     int baseHashCode = object == null ? 1 : ArrayUtil.hashCode(object);
 
     count++;

@@ -1,5 +1,6 @@
 package niwo.myBatiseStudy;
 
+import com.alibaba.fastjson.JSON;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -10,6 +11,7 @@ import site.niwo.www.mapper.MybatiesPoMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -27,13 +29,13 @@ public class TestXml {
        SqlSession session = sqlSessionFactory.openSession(false);
        //返回代理类  上面是环境  这里的就是具体操作和执行的开始 DefaultSqlSession
        MybatiesPoMapper mapper = session.getMapper(MybatiesPoMapper.class);
-       TestXml testXml = new TestXml();
-       testXml.insert(mapper);
-       ////MybatiesPo po = mapper.getPo(1);
-       //List<MybatiesPo> pos = mapper.getPoAll();
-       //List<MybatiesPo> pos2 = mapper.getPoAll();
-       //System.out.println(JSON.toJSONString(pos));
-       //System.out.println(JSON.toJSONString(pos2));
+//       TestXml testXml = new TestXml();
+//       testXml.insert(mapper);
+       //MybatiesPo po = mapper.getPo(1);
+       List<MybatiesPo> pos = mapper.getPoAll();
+       List<MybatiesPo> pos2 = mapper.getPoAll();
+       System.out.println(JSON.toJSONString(pos));
+       System.out.println(JSON.toJSONString(pos2));
 
        //6.释放资源
        session.close();

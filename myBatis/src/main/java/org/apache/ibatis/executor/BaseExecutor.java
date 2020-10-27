@@ -161,7 +161,7 @@ public abstract class BaseExecutor implements Executor {
         //再次重设   将入参出参缓存
         handleLocallyCachedOutputParameters(ms, key, parameter, boundSql);
       } else {
-        //查询数据库
+        //第一次进来resultHandler == null
         list = queryFromDatabase(ms, parameter, rowBounds, resultHandler, key, boundSql);
       }
     } finally {
@@ -212,7 +212,7 @@ public abstract class BaseExecutor implements Executor {
     cacheKey.update(boundSql.getSql());
     List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
     TypeHandlerRegistry typeHandlerRegistry = ms.getConfiguration().getTypeHandlerRegistry();
-    // mimic DefaultParameterHandler logic
+    // mimic DefaultParameterHandler logic  有参数的情况下
     for (ParameterMapping parameterMapping : parameterMappings) {
       if (parameterMapping.getMode() != ParameterMode.OUT) {
         Object value;

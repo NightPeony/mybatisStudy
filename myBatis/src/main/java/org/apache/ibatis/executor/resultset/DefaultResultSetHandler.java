@@ -192,13 +192,16 @@ public class DefaultResultSetHandler implements ResultSetHandler {
     //ResultSetWrapper 关系映射器
     ResultSetWrapper rsw = getFirstResultSet(stmt);
     //ResultMap是结果的映射信息   你一种一个方法，那个方法的结果映射关系
-    //结果
+    //就是resultMap
     List<ResultMap> resultMaps = mappedStatement.getResultMaps();
     int resultMapCount = resultMaps.size();
+    /**
+     * 轻微的验证下
+     */
     validateResultMapsCount(rsw, resultMapCount);
-    //
+    //处理
     while (rsw != null && resultMapCount > resultSetCount) {
-      //ResultMap  每一条
+      //resultMap是可以多个的
       ResultMap resultMap = resultMaps.get(resultSetCount);
       //转换
       handleResultSet(rsw, resultMap, multipleResults, null);

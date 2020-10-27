@@ -71,8 +71,6 @@ public class MapperMethod {
         /*
         * UPDATE  DELETE  INSERT走的都是update同一套逻辑
         * convertArgsToSqlCommandParam 解析参数
-        *
-        *
         * */
         Object param = method.convertArgsToSqlCommandParam(args);
         result = rowCountResult(sqlSession.insert(command.getName(), param));
@@ -88,25 +86,20 @@ public class MapperMethod {
         result = rowCountResult(sqlSession.delete(command.getName(), param));
         break;
       }
-      //第一个看查询
       case SELECT:
-        //方法信息是在什么时候构建的
-        //是否是返回空的  并且  还有handler  result = null;
+        /**
+         * 解析都是在fonfiguration做的处理，暂且不管解析
+         */
         if (method.returnsVoid() && method.hasResultHandler()) {
           executeWithResultHandler(sqlSession, args);
           result = null;
-          //是否是多条   重点看这个  其他都是转换问题
         } else if (method.returnsMany()) {
           result = executeForMany(sqlSession, args);
-          //是否是map
         } else if (method.returnsMap()) {
           result = executeForMap(sqlSession, args);
-          //这是？？
         } else if (method.returnsCursor()) {
           result = executeForCursor(sqlSession, args);
         } else {
-          //其他一律走单条
-          //参数
           Object param = method.convertArgsToSqlCommandParam(args);
           result = sqlSession.selectOne(command.getName(), param);
           if (method.returnsOptional()
@@ -145,6 +138,7 @@ public class MapperMethod {
   }
 
   private void executeWithResultHandler(SqlSession sqlSession, Object[] args) {
+    //mapper声明
     MappedStatement ms = sqlSession.getConfiguration().getMappedStatement(command.getName());
     if (!StatementType.CALLABLE.equals(ms.getStatementType())
         && void.class.equals(ms.getResultMaps().get(0).getType())) {
