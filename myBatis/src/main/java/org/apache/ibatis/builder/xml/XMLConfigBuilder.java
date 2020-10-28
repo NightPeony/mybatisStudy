@@ -107,36 +107,53 @@ public class XMLConfigBuilder extends BaseBuilder {
 
   private void parseConfiguration(XNode root) {
     try {
-      //解析常量properties
+      //解析properties放入configuration XPathParser
       propertiesElement(root.evalNode("properties"));
-      //获取配置<settings>节点  相当于整个文档的整体配置
+      //解析setting 返回properties
       Properties settings = settingsAsProperties(root.evalNode("settings"));
       //虚拟文件系统
       loadCustomVfs(settings);
-      //控制mybatis的日志打印  放入configration
+      /**
+       * 选择打印日志的工具
+       * 在configutation时静态注册很多基本类其中就有log typeAliasRegistry
+       * 根据你设置的标签  取使用对应的日志工具
+       */
       loadCustomLogImpl(settings);
       //记录别名   放入configration
       typeAliasesElement(root.evalNode("typeAliases"));
-      //记录插件功能   放入configration
+      //记录插件功能   放入configration  interceptorChain
       pluginElement(root.evalNode("plugins"));
-      //配置默认的对象工厂  放入configration
-      //======================================
+      /**
+       * 创建对象的工厂  默认就是通过反射调用  要想覆盖改类  就需要自行实现覆盖
+       */
       objectFactoryElement(root.evalNode("objectFactory"));
-      //对指定的对象进行加工  放入configration
+      /**
+       * 这个是结果映射  和objectFactory这个设计一样  但是在官网没发现这个标签了
+       */
       objectWrapperFactoryElement(root.evalNode("objectWrapperFactory"));
-      //======================================
-      //用于缓存 Reflector 的功能  存入configration
+      /**
+       *这个是结果映射  和objectFactory这个设计一样  但是在官网没发现这个标签了
+       */
       reflectorFactoryElement(root.evalNode("reflectorFactory"));
-      //初始化    默认节点数据    即setting设置
-      //基础类
+      /**
+       * 各种注册
+       */
       settingsElement(settings);
-      // read it after objectFactory and objectWrapperFactory issue #631
-      //环境
+      /**
+       * 解析环境
+       */
       environmentsElement(root.evalNode("environments"));
+      /**
+       * 使用那套数据库
+       */
       databaseIdProviderElement(root.evalNode("databaseIdProvider"));
-      //指定类型  JDBC和JavaType 之间的转换
+      /**
+       *类型处理器（typeHandlers） 看官网
+       */
       typeHandlerElement(root.evalNode("typeHandlers"));
-      //获取mapper文件===============
+      /**
+       * 重点 映射器（mappers）
+       */
       mapperElement(root.evalNode("mappers"));
     } catch (Exception e) {
       throw new BuilderException("Error parsing SQL Mapper Configuration. Cause: " + e, e);
@@ -386,6 +403,9 @@ public class XMLConfigBuilder extends BaseBuilder {
   private void mapperElement(XNode parent) throws Exception {
     if (parent != null) {
       for (XNode child : parent.getChildren()) {
+        /**
+         * 从这里重点可以看出配置方式  一种是包 一种是具体的类路径
+         */
         if ("package".equals(child.getName())) {
           String mapperPackage = child.getStringAttribute("name");
           configuration.addMappers(mapperPackage);

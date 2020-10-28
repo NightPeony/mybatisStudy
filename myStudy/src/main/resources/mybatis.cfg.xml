@@ -27,12 +27,8 @@
 
     <!--设置-->
     <settings>
-    <!-- 打印sql日志 -->
-       <setting name="logImpl" value="STDOUT_LOGGING" />
-<!--        &lt;!&ndash;是否打开缓存  打开全局缓存(打开二级缓存)&ndash;&gt;-->
-<!--        <setting name="cacheEnabled" value="true"/>-->
-<!--        &lt;!&ndash;共享缓存范围(session)&ndash;&gt;-->
-<!--        <setting name="cacheEnabled" value="SESSION"/>-->
+        <!-- 打印sql日志 -->
+       <setting name="logImpl" value="SLF4J" />
     </settings>
 
     <!--别名-->
