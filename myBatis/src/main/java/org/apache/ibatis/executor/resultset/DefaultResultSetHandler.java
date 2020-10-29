@@ -126,7 +126,9 @@ public class DefaultResultSetHandler implements ResultSetHandler {
     this.rowBounds = rowBounds;
     this.parameterHandler = parameterHandler;
     this.boundSql = boundSql;
+    //类型注册中心
     this.typeHandlerRegistry = configuration.getTypeHandlerRegistry();
+    //配置文件的objectFactory就是如何生成object
     this.objectFactory = configuration.getObjectFactory();
     this.reflectorFactory = configuration.getReflectorFactory();
     this.resultHandler = resultHandler;
