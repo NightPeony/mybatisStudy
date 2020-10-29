@@ -29,9 +29,9 @@ public class TestXml {
        SqlSession session = sqlSessionFactory.openSession(false);
        //返回代理类  上面是环境  这里的就是具体操作和执行的开始 DefaultSqlSession
        MybatiesPoMapper mapper = session.getMapper(MybatiesPoMapper.class);
-//       TestXml testXml = new TestXml();
-//       testXml.insert(mapper);
-       //MybatiesPo po = mapper.getPo(1);
+       TestXml testXml = new TestXml();
+       testXml.insert(mapper);
+       MybatiesPo po = mapper.getPo(1);
        List<MybatiesPo> pos = mapper.getPoAll();
        List<MybatiesPo> pos2 = mapper.getPoAll();
        System.out.println(JSON.toJSONString(pos));

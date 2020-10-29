@@ -87,6 +87,7 @@ public class MapperAnnotationBuilder {
     String resource = type.toString();
     //初次加载的情况
     if (!configuration.isResourceLoaded(resource)) {
+      //解析xml
       loadXmlResource();
       configuration.addLoadedResource(resource);
       //Current 现在的

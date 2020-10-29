@@ -408,6 +408,9 @@ public class XMLConfigBuilder extends BaseBuilder {
          */
         if ("package".equals(child.getName())) {
           String mapperPackage = child.getStringAttribute("name");
+          /**
+           * 如果是包解析sql是在 加入mapper时解析 MapperAnnotationBuilder解析
+           */
           configuration.addMappers(mapperPackage);
         } else {
           String resource = child.getStringAttribute("resource");
@@ -418,6 +421,9 @@ public class XMLConfigBuilder extends BaseBuilder {
             InputStream inputStream = Resources.getResourceAsStream(resource);
             XMLMapperBuilder mapperParser = new XMLMapperBuilder(inputStream, configuration, resource, configuration.getSqlFragments());
             //具体的解析 每一个mapeer是一个XMLMapperBuilder
+            /**
+             * 如果是路劲是在调用addMappers之前就解析  XMLMapperBuilder 解析
+             */
             mapperParser.parse();
           } else if (resource == null && url != null && mapperClass == null) {
             ErrorContext.instance().resource(url);

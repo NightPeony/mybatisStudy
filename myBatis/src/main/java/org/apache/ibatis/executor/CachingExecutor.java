@@ -90,7 +90,7 @@ public class CachingExecutor implements Executor {
   @Override
   public <E> List<E> query(MappedStatement ms, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, CacheKey key, BoundSql boundSql)
       throws SQLException {
-    //获取缓存对象
+    //获取缓存对象  缓存对象包含很多内容
     Cache cache = ms.getCache();
     if (cache != null) {
       //是否要刷新缓存

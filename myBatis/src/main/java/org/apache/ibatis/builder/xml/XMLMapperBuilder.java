@@ -81,14 +81,20 @@ public class XMLMapperBuilder extends BaseBuilder {
   public void parse() {
     //是否有加载过  没有就加载
     if (!configuration.isResourceLoaded(resource)) {
-      //将mapperde的数据解析出来
+      //将mapper的数据解析出来  如果是包
       configurationElement(parser.evalNode("/mapper"));
       //放入配置
       configuration.addLoadedResource(resource);
       //放入mapper
       bindMapperForNamespace();
     }
-    //清空缓存 也不知道啥
+    //这里删除的不是本身数据 而是操作数据的辅助
+    /**
+     * 比如这个：ResultMapResolver他是一个解析着
+     * 在解析sql语句的时候充当角色  如果被加载  确实可以抛弃
+     * 仔细看包和路劲的加载  这里其实就是说  删除一些工具类
+     * 举个例子：xml被解析完了，每个xml都有一个解析者，解析完了,就可以删除了
+     */
     parsePendingResultMaps();
     parsePendingCacheRefs();
     parsePendingStatements();

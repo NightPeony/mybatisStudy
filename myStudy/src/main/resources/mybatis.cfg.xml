@@ -28,6 +28,7 @@
     <!--设置-->
     <settings>
         <!-- 打印sql日志 -->
+        <setting name="cacheEnabled" value="false"/>
        <setting name="logImpl" value="SLF4J" />
     </settings>
 

@@ -78,7 +78,8 @@ public class MapperRegistry {
          * 注解
          * MapperAnnotationBuilder 包含config  在MapperAnnotationBuilder解析的内容迟早还是到了conf中保存
          * MapperAnnotationBuilder 包含的 MapperBuilderAssistant 也包含conf
-         * 重点连接下缓存
+         * MapperAnnotationBuilder属于一个委托类  并不存入conf
+         * 里面的伫立也是不关联的  主要就是产生mapperStatement存入config
          */
         MapperAnnotationBuilder parser = new MapperAnnotationBuilder(config, type);
         /**
