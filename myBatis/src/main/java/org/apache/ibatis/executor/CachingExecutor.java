@@ -15,22 +15,18 @@
  */
 package org.apache.ibatis.executor;
 
-import java.sql.SQLException;
-import java.util.List;
-
 import org.apache.ibatis.cache.Cache;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.cache.TransactionalCacheManager;
 import org.apache.ibatis.cursor.Cursor;
-import org.apache.ibatis.mapping.BoundSql;
-import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.mapping.ParameterMapping;
-import org.apache.ibatis.mapping.ParameterMode;
-import org.apache.ibatis.mapping.StatementType;
+import org.apache.ibatis.mapping.*;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.transaction.Transaction;
+
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  * @author Clinton Begin
@@ -39,7 +35,7 @@ import org.apache.ibatis.transaction.Transaction;
 public class CachingExecutor implements Executor {
 
   private final Executor delegate;
-  //事物缓存器
+  //缓存管理器
   private final TransactionalCacheManager tcm = new TransactionalCacheManager();
 
   public CachingExecutor(Executor delegate) {
@@ -98,13 +94,22 @@ public class CachingExecutor implements Executor {
     Cache cache = ms.getCache();
     if (cache != null) {
       //是否要刷新缓存
+      /**
+       * 构建这个MappedStatement的时候缓存信息也存入flushCacheIfRequired这个配置就是缓存配置
+       */
       flushCacheIfRequired(ms);
       if (ms.isUseCache() && resultHandler == null) {
         ensureNoOutParams(ms, boundSql);
+        /**
+         * 这个不只是个容器
+         * 是一个待管理的中心
+         * 如果二级缓存查不到
+         * 接下来就是查询数据库
+         */
         @SuppressWarnings("unchecked")
         List<E> list = (List<E>) tcm.getObject(cache, key);
         if (list == null) {
-          //就是不配置二级 的查询步骤 baseExcutor
+          //查询数据库
           list = delegate.query(ms, parameterObject, rowBounds, resultHandler, key, boundSql);
           //放入缓存
           tcm.putObject(cache, key, list); // issue #578 and #116

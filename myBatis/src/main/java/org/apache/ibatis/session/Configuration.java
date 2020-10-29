@@ -634,7 +634,9 @@ public class Configuration {
       executor = new SimpleExecutor(this, transaction);
     }
     //是否打开缓存
-    //默认是打开的    这里是一级缓存
+    /**
+     * 打开缓存就是用这个
+     */
     if (cacheEnabled) {
       executor = new CachingExecutor(executor);
     }

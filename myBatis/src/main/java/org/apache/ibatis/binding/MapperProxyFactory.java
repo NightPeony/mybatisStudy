@@ -30,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MapperProxyFactory<T> {
 
   private final Class<T> mapperInterface;
-  //一个空的容器   方法缓存
+  //方法的操作者   没第一次进来都是空的  MapperMethodInvoker
   private final Map<Method, MapperMethodInvoker> methodCache = new ConcurrentHashMap<>();
 
   //代理类

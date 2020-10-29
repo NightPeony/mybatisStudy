@@ -15,15 +15,6 @@
  */
 package org.apache.ibatis.session.defaults;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.ibatis.binding.BindingException;
 import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.exceptions.ExceptionFactory;
@@ -39,6 +30,14 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The default implementation for {@link SqlSession}.
@@ -148,6 +147,9 @@ public class DefaultSqlSession implements SqlSession {
     try {
       //默认都是走到这里来
       //MappedStatement  这个对象在解析的时候存入的conf  是每个节点的那个信息承载
+      /**
+       * 在解析的时候将MappedStatement 全部存入conf 这个时候拿出来
+       */
       MappedStatement ms = configuration.getMappedStatement(statement);
       //默认是这个   构建的session可以回头看  CachingExecutor
       //ms节点信息-->核心   wrapCollection:参数转换  集合啊  数组啊  map

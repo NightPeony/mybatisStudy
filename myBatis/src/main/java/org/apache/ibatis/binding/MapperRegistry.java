@@ -64,11 +64,26 @@ public class MapperRegistry {
       }
       boolean loadCompleted = false;
       try {
+        /**
+         * 存入代理类session   get的时候就是从这里获取
+         * 这里只放个命名空间   它是有个构造方法的   哪个时候传入session
+         * 设计在于项目启动和项目执行   启动type等数据都是死的   但是session会打开多个  session是动态的
+         * 执行器是一个工具  为什么不把执行器放入  感觉不同的会话采用不同的执行器
+         */
         knownMappers.put(type, new MapperProxyFactory<>(type));
         // It's important that the type is added before the parser is run
         // otherwise the binding may automatically be attempted by the
         // mapper parser. If the type is already known, it won't try.
+        /**
+         * 注解
+         * MapperAnnotationBuilder 包含config  在MapperAnnotationBuilder解析的内容迟早还是到了conf中保存
+         * MapperAnnotationBuilder 包含的 MapperBuilderAssistant 也包含conf
+         * 重点连接下缓存
+         */
         MapperAnnotationBuilder parser = new MapperAnnotationBuilder(config, type);
+        /**
+         * 解析的内容依旧放到config
+         */
         parser.parse();
         loadCompleted = true;
       } finally {
